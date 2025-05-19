@@ -11,6 +11,7 @@ import RestaurantBlog from "./Pages/RestaurantBlog";
 import LanguageSelector from "./components/LanguageSelector";
 import LoginPage from "./Pages/LoginPage";
 import SEOSchema from "./components/SEOSchema";
+import { ShiftProvider } from "./contexts/ShiftContext";
 
 function App() {
   const location = useLocation();
@@ -27,26 +28,28 @@ function App() {
 
   return (
     <NavbarProvider>
-      {/* Mostra la navbar solo se non è la pagina di login */}
-      {!isLoginPage && <Navbar />}
-      
-      {/* Aggiungi il componente SEOSchema per i dati strutturati */}
-      <SEOSchema type={getSchemaType()} />
-      
-      <ContentWrapper>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/reservation" element={<ReservationPage />} />
-          <Route path="/galleria" element={<Gallery />} />
-          <Route path="/blog" element={<RestaurantBlog />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Routes>
-      </ContentWrapper>
-      
-      {/* Mostra il selettore di lingua e il footer solo se non è la pagina di login */}
-      {!isLoginPage && <LanguageSelector />}
-      {!isLoginPage && <Footer />}
+      <ShiftProvider>
+        {/* Mostra la navbar solo se non è la pagina di login */}
+        {!isLoginPage && <Navbar />}
+        
+        {/* Aggiungi il componente SEOSchema per i dati strutturati */}
+        <SEOSchema type={getSchemaType()} />
+        
+        <ContentWrapper>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/reservation" element={<ReservationPage />} />
+            <Route path="/galleria" element={<Gallery />} />
+            <Route path="/blog" element={<RestaurantBlog />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </ContentWrapper>
+        
+        {/* Mostra il selettore di lingua e il footer solo se non è la pagina di login */}
+        {!isLoginPage && <LanguageSelector />}
+        {!isLoginPage && <Footer />}
+      </ShiftProvider>
     </NavbarProvider>
   );
 }
