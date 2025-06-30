@@ -2,7 +2,7 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { FiCalendar, FiClock, FiUsers, FiCheck, FiX, FiAlertCircle } from "react-icons/fi";
 import { format } from "date-fns";
-import { getShiftsForDate, Reservation } from "../services/Reservation";
+import { getShiftsForDate, Reservation } from "../services/ReservationAPI";
 import { useTranslation } from "react-i18next";
 
 interface FormData {

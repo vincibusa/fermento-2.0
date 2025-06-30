@@ -4,11 +4,11 @@ import { FiEdit2, FiTrash2, FiCalendar, FiClock, FiUsers, FiCheck, FiX } from "r
 import { format } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import emailjs from '@emailjs/browser';
+
 import {
   Reservation,
   Shift,
-  subscribeToReservations,
+  subscribeToReservationsForDate,
   updateReservation,
   deleteReservation,
   getShiftsForDate,
@@ -17,7 +17,7 @@ import {
   allTimes,
   acceptReservation,
   rejectReservation
-} from "../services/Reservation";
+} from "../services/ReservationAPI";
 import ReservationModalEdit from "../components/ReservationModalEdit";
 
 const ReservationPage: React.FC = () => {
@@ -32,19 +32,15 @@ const ReservationPage: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
 
-  useEffect(() => {
-    if(localStorage.getItem("isAuthenticated") === "false" || localStorage.getItem("isAuthenticated") === null) {
-      window.location.href = "/login";
-    }
-  }, []);
 
-  // Sottoscrizione in tempo reale alle prenotazioni
+
+  // Sottoscrizione in tempo reale alle prenotazioni per la data selezionata
   useEffect(() => {
-    const unsubscribe = subscribeToReservations((reservationsData) => {
+    const unsubscribe = subscribeToReservationsForDate(selectedDate, (reservationsData: Reservation[]) => {
       setReservations(reservationsData);
     });
     return () => unsubscribe();
-  }, []);
+  }, [selectedDate]);
 
   // Carica i turni per la data selezionata
   useEffect(() => {
@@ -122,24 +118,7 @@ const ReservationPage: React.FC = () => {
   const handleAccept = useCallback(async (reservation: Reservation) => {
     try {
       await acceptReservation(reservation.id!, reservation);
-      
-      // Invia email di conferma
-      const templateParams = {
-        to_name: reservation.fullName,
-        to_email: reservation.email,
-        reservation_date: format(new Date(reservation.date), "dd/MM/yyyy"),
-        reservation_time: reservation.time,
-        seats: reservation.seats
-      };
-
-      await emailjs.send(
-        'service_jlzz6px',
-        'template_5ltxf0t',
-        templateParams,
-        'iIz1ynV6Pc7STPfuf'
-      );
-
-      toast.success("Prenotazione accettata e email di conferma inviata");
+      toast.success("Prenotazione accettata");
     } catch (error) {
       toast.error("Errore nell'accettazione della prenotazione");
       console.error(error);
@@ -149,24 +128,7 @@ const ReservationPage: React.FC = () => {
   const handleReject = useCallback(async (reservation: Reservation) => {
     try {
       await rejectReservation(reservation.id!, reservation);
-      
-      // Invia email di rifiuto
-      const templateParams = {
-        to_name: reservation.fullName,
-        to_email: reservation.email,
-        reservation_date: format(new Date(reservation.date), "dd/MM/yyyy"),
-        reservation_time: reservation.time,
-        seats: reservation.seats
-      };
-
-      await emailjs.send(
-        'service_jlzz6px',
-        'template_3cehio9',
-        templateParams,
-        'iIz1ynV6Pc7STPfuf'
-      );
-
-      toast.success("Prenotazione rifiutata e email di notifica inviata");
+      toast.success("Prenotazione rifiutata");
     } catch (error) {
       toast.error("Errore nel rifiuto della prenotazione");
       console.error(error);

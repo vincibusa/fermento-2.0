@@ -9,13 +9,12 @@ import ContentWrapper from "./components/ContentWrapper";
 import { NavbarProvider } from "./contexts/NavbarContenxt";
 import RestaurantBlog from "./Pages/RestaurantBlog";
 import LanguageSelector from "./components/LanguageSelector";
-import LoginPage from "./Pages/LoginPage";
+
 import SEOSchema from "./components/SEOSchema";
-import { ShiftProvider } from "./contexts/ShiftContext";
+
 
 function App() {
   const location = useLocation();
-  const isLoginPage = location.pathname === "/login";
   const isMenuPage = location.pathname === "/menu";
   const isBlogPage = location.pathname === "/blog";
 
@@ -28,9 +27,7 @@ function App() {
 
   return (
     <NavbarProvider>
-      <ShiftProvider>
-        {/* Mostra la navbar solo se non è la pagina di login */}
-        {!isLoginPage && <Navbar />}
+        <Navbar />
         
         {/* Aggiungi il componente SEOSchema per i dati strutturati */}
         <SEOSchema type={getSchemaType()} />
@@ -42,14 +39,11 @@ function App() {
             <Route path="/reservation" element={<ReservationPage />} />
             <Route path="/galleria" element={<Gallery />} />
             <Route path="/blog" element={<RestaurantBlog />} />
-            <Route path="/login" element={<LoginPage />} />
           </Routes>
         </ContentWrapper>
         
-        {/* Mostra il selettore di lingua e il footer solo se non è la pagina di login */}
-        {!isLoginPage && <LanguageSelector />}
-        {!isLoginPage && <Footer />}
-      </ShiftProvider>
+        <LanguageSelector />
+        <Footer />
     </NavbarProvider>
   );
 }
