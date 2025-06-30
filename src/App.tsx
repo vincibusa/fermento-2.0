@@ -2,7 +2,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./Pages/HomePage";
 import Menu from "./Pages/Menu";
-import ReservationPage from "./Pages/ReservationPage";
+
 import Gallery from "./Pages/Gallery";
 import Footer from "./components/Footer";
 import ContentWrapper from "./components/ContentWrapper";
@@ -36,7 +36,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/menu" element={<Menu />} />
-            <Route path="/reservation" element={<ReservationPage />} />
+
             <Route path="/galleria" element={<Gallery />} />
             <Route path="/blog" element={<RestaurantBlog />} />
           </Routes>

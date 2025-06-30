@@ -1,17 +1,19 @@
 // Nuovo servizio prenotazioni che utilizza il back-end API
-import { apiService, type ApiReservation, type ApiShift } from './apiService';
+import { apiService } from './apiService';
 
 // Manteniamo le interfacce esistenti per compatibilità
 export interface Reservation {
   id?: string;
   fullName: string;
   phone: string;
+  email: string;
   date: string;   // formato "YYYY-MM-DD"
-  time: string;   // formato "HH:mm" (es. "19:00", "19:30", ecc.)
+  time: string;   // formato "HH:mm"
   seats: number;
   specialRequests?: string;
   status: 'pending' | 'accepted' | 'rejected';
-  email: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Shift {
@@ -40,20 +42,28 @@ export const initializeShiftsForDate = async (date: string): Promise<void> => {
 };
 
 /**
- * Aggiorna le impostazioni di un turno per una data specifica.
+ * Recupera una prenotazione per ID.
  */
-export const updateShift = async (
-  date: string,
-  time: string,
-  shift: Partial<Shift>
-): Promise<void> => {
+export const getReservationById = async (id: string): Promise<Reservation | null> => {
   try {
-    await apiService.updateShift(date, time, {
-      enabled: shift.enabled,
-      maxReservations: shift.maxReservations
-    });
+    const apiReservation = await apiService.getReservationById(id);
+    if (!apiReservation) return null;
+    
+    return {
+      id: apiReservation.id,
+      fullName: apiReservation.fullName,
+      phone: apiReservation.phone,
+      email: apiReservation.email,
+      date: apiReservation.date,
+      time: apiReservation.time,
+      seats: apiReservation.seats,
+      specialRequests: apiReservation.specialRequests,
+      status: apiReservation.status,
+      createdAt: apiReservation.createdAt,
+      updatedAt: apiReservation.updatedAt
+    };
   } catch (error) {
-    console.error('Errore durante l\'aggiornamento del turno:', error);
+    console.error('Errore durante il recupero della prenotazione:', error);
     throw error;
   }
 };
@@ -76,51 +86,15 @@ export const getShiftsForDate = async (date: string): Promise<Shift[]> => {
 };
 
 /**
- * Aggiunge una prenotazione.
+ * Aggiorna un shift specifico.
  */
-export const addReservation = async (reservation: Reservation): Promise<string | null> => {
+export const updateShift = async (date: string, time: string, updates: Partial<Shift>): Promise<void> => {
   try {
-    const id = await apiService.createReservation({
-      fullName: reservation.fullName,
-      phone: reservation.phone,
-      email: reservation.email,
-      date: reservation.date,
-      time: reservation.time,
-      seats: reservation.seats,
-      specialRequests: reservation.specialRequests || '',
-      status: reservation.status || 'pending'
-    });
-    return id;
+    await apiService.updateShift(date, time, updates);
   } catch (error) {
-    console.error('Errore durante l\'aggiunta della prenotazione:', error);
+    console.error('Errore durante l\'aggiornamento dello shift:', error);
     throw error;
   }
-};
-
-/**
- * Sottoscrizione in tempo reale alle prenotazioni.
- */
-export const subscribeToReservations = (
-  callback: (reservations: Reservation[]) => void
-): (() => void) => {
-  // Utilizziamo la data di oggi come default per la sottoscrizione
-  const today = new Date().toISOString().split('T')[0];
-  
-  return apiService.subscribeToReservations(today, (apiReservations) => {
-    callback(apiReservations as Reservation[]);
-  });
-};
-
-/**
- * Sottoscrizione in tempo reale alle prenotazioni per una data specifica.
- */
-export const subscribeToReservationsForDate = (
-  date: string,
-  callback: (reservations: Reservation[]) => void
-): (() => void) => {
-  return apiService.subscribeToReservations(date, (apiReservations) => {
-    callback(apiReservations as Reservation[]);
-  });
 };
 
 /**
@@ -133,7 +107,19 @@ export const getReservations = async (filters?: {
 }): Promise<Reservation[]> => {
   try {
     const apiReservations = await apiService.getReservations(filters);
-    return apiReservations as Reservation[];
+    return apiReservations.map(apiReservation => ({
+      id: apiReservation.id,
+      fullName: apiReservation.fullName,
+      phone: apiReservation.phone,
+      email: apiReservation.email,
+      date: apiReservation.date,
+      time: apiReservation.time,
+      seats: apiReservation.seats,
+      specialRequests: apiReservation.specialRequests,
+      status: apiReservation.status,
+      createdAt: apiReservation.createdAt,
+      updatedAt: apiReservation.updatedAt
+    }));
   } catch (error) {
     console.error('Errore durante il recupero delle prenotazioni:', error);
     throw error;
@@ -141,20 +127,47 @@ export const getReservations = async (filters?: {
 };
 
 /**
- * Aggiorna una prenotazione esistente.
+ * Crea una nuova prenotazione.
  */
-export const updateReservation = async (key: string, reservation: Reservation): Promise<void> => {
+export const createReservation = async (reservation: Omit<Reservation, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> => {
   try {
-    await apiService.updateReservation(key, {
+    const reservationId = await apiService.createReservation(reservation);
+    return reservationId;
+  } catch (error) {
+    console.error('Errore durante la creazione della prenotazione:', error);
+    throw error;
+  }
+};
+
+/**
+ * Alias per createReservation (compatibilità retroattiva)
+ */
+export const addReservation = async (reservation: Reservation): Promise<string | null> => {
+  try {
+    const reservationData = {
       fullName: reservation.fullName,
       phone: reservation.phone,
       email: reservation.email,
       date: reservation.date,
       time: reservation.time,
       seats: reservation.seats,
-      specialRequests: reservation.specialRequests || '',
-      status: reservation.status || 'pending'
-    });
+      specialRequests: reservation.specialRequests,
+      status: reservation.status || 'pending' as const
+    };
+    const id = await createReservation(reservationData);
+    return id;
+  } catch (error) {
+    console.error('Errore durante l\'aggiunta della prenotazione:', error);
+    throw error;
+  }
+};
+
+/**
+ * Aggiorna una prenotazione esistente.
+ */
+export const updateReservation = async (id: string, updates: Partial<Reservation>): Promise<void> => {
+  try {
+    await apiService.updateReservation(id, updates);
   } catch (error) {
     console.error('Errore durante l\'aggiornamento della prenotazione:', error);
     throw error;
@@ -162,11 +175,11 @@ export const updateReservation = async (key: string, reservation: Reservation): 
 };
 
 /**
- * Elimina una prenotazione dato il suo key.
+ * Elimina una prenotazione.
  */
-export const deleteReservation = async (key: string): Promise<void> => {
+export const deleteReservation = async (id: string): Promise<void> => {
   try {
-    await apiService.deleteReservation(key);
+    await apiService.deleteReservation(id);
   } catch (error) {
     console.error('Errore durante l\'eliminazione della prenotazione:', error);
     throw error;
@@ -174,9 +187,9 @@ export const deleteReservation = async (key: string): Promise<void> => {
 };
 
 /**
- * Accetta una prenotazione e invia email di conferma
+ * Accetta una prenotazione.
  */
-export const acceptReservation = async (key: string, reservation: Reservation): Promise<void> => {
+export const acceptReservation = async (key: string): Promise<void> => {
   try {
     await apiService.acceptReservation(key);
   } catch (error) {
@@ -186,9 +199,9 @@ export const acceptReservation = async (key: string, reservation: Reservation): 
 };
 
 /**
- * Rifiuta una prenotazione
+ * Rifiuta una prenotazione.
  */
-export const rejectReservation = async (key: string, reservation: Reservation): Promise<void> => {
+export const rejectReservation = async (key: string): Promise<void> => {
   try {
     await apiService.rejectReservation(key);
   } catch (error) {
@@ -219,14 +232,28 @@ export const checkShiftAvailability = async (date: string, time: string, request
 };
 
 /**
- * Recupera le statistiche per una data
+ * Recupera le statistiche delle prenotazioni per una data
  */
 export const getReservationStats = async (date: string) => {
   try {
-    return await apiService.getReservationStats(date);
+    const stats = await apiService.getReservationStats(date);
+    return stats;
   } catch (error) {
     console.error('Errore durante il recupero delle statistiche:', error);
     throw error;
+  }
+};
+
+/**
+ * Recupera tutti gli orari disponibili
+ */
+export const getAvailableTimes = async (): Promise<string[]> => {
+  try {
+    const times = await apiService.getAvailableTimes();
+    return times;
+  } catch (error) {
+    console.error('Errore durante il recupero degli orari disponibili:', error);
+    return allTimes; // Fallback agli orari hardcoded
   }
 };
 
@@ -240,6 +267,31 @@ export const checkServerConnection = async (): Promise<boolean> => {
     console.error('Errore durante la verifica della connessione:', error);
     return false;
   }
+};
+
+/**
+ * Sottoscrizione in tempo reale alle prenotazioni per una data specifica.
+ */
+export const subscribeToReservationsForDate = (
+  date: string,
+  callback: (reservations: Reservation[]) => void
+): (() => void) => {
+  return apiService.subscribeToReservations(date, (apiReservations) => {
+    const reservations = apiReservations.map(apiReservation => ({
+      id: apiReservation.id,
+      fullName: apiReservation.fullName,
+      phone: apiReservation.phone,
+      email: apiReservation.email,
+      date: apiReservation.date,
+      time: apiReservation.time,
+      seats: apiReservation.seats,
+      specialRequests: apiReservation.specialRequests,
+      status: apiReservation.status,
+      createdAt: apiReservation.createdAt,
+      updatedAt: apiReservation.updatedAt
+    }));
+    callback(reservations);
+  });
 };
 
 // Esporta anche il servizio API per usi avanzati
