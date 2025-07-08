@@ -1,13 +1,18 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { FiCalendar, FiClock, FiUsers, FiCheck, FiX, FiAlertCircle } from "react-icons/fi";
-import { format } from "date-fns";
+import { FiCheck, FiX, FiAlertCircle } from "react-icons/fi";
+
 import { addReservation, getShiftsForDate } from "../services/ReservationAPI";
 import { useTranslation } from "react-i18next";
+import CustomDatePicker from "./CustomDatePicker";
+import CustomTimeSelect from "./CustomTimeSelect";
+import CustomPeopleSelect from "./CustomPeopleSelect";
+import CustomPhoneInput from "./CustomPhoneInput";
 
 interface FormData {
   firstName: string;
   lastName: string;
   phone: string;
+  countryCode: string;
   email: string;
   date: string;
   time: string;
@@ -27,6 +32,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onClose }) 
     firstName: "",
     lastName: "",
     phone: "",
+    countryCode: "+39",
     email: "",
     date: "",
     time: "",
@@ -102,6 +108,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onClose }) 
         const reservation = {
           fullName,
           phone: formData.phone,
+          countryCode: formData.countryCode,
           email: formData.email,
           date: formData.date,
           time: formData.time,
@@ -143,7 +150,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onClose }) 
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md mx-auto bg-card rounded-lg shadow-lg p-4 sm:p-6 my-4 max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-md mx-auto bg-card rounded-lg shadow-lg p-4 sm:p-6 my-4 max-h-[80vh] overflow-y-auto"
       >
         <div className="flex items-center justify-between mb-4">
           <p className="text-lg sm:text-xl font-heading text-accent">
@@ -192,22 +199,22 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onClose }) 
           </div>
 
           {/* Numero di Telefono */}
-          <div>
-            <label className="block text-sm font-body text-foreground mb-2">
-              {t("reservationModal.phoneLabel")}
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              className={`w-full px-4 py-2 rounded-md border ${
-                errors.phone ? "border-destructive" : "border-input"
-              } focus:outline-none focus:ring-2 focus:ring-ring`}
-              placeholder={t("reservationModal.phonePlaceholder")}
-            />
-            {errors.phone && <p className="mt-1 text-sm text-destructive">{errors.phone}</p>}
-          </div>
+          <CustomPhoneInput
+            value={formData.phone}
+            countryCode={formData.countryCode}
+            onPhoneChange={(phone) => {
+              setFormData((prev) => ({ ...prev, phone }));
+              if (errors.phone) {
+                setErrors((prev) => ({ ...prev, phone: "" }));
+              }
+            }}
+            onCountryCodeChange={(countryCode) => {
+              setFormData((prev) => ({ ...prev, countryCode }));
+            }}
+            error={errors.phone}
+            label={t("reservationModal.phoneLabel")}
+            placeholder={t("reservationModal.phonePlaceholder")}
+          />
 
           {/* Campo Email */}
           <div>
@@ -227,80 +234,47 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onClose }) 
             {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Campo Data */}
-            <div>
-              <label className="block text-sm font-body text-foreground mb-2">
-                {t("reservationModal.dateLabel")}
-              </label>
-              <div className="relative">
-                <FiCalendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent" />
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleInputChange}
-                  min={format(new Date(), "yyyy-MM-dd")}
-                  className={`w-full pl-10 pr-4 py-2 rounded-md border ${
-                    errors.date ? "border-destructive" : "border-input"
-                  } focus:outline-none focus:ring-2 focus:ring-ring`}
-                />
-              </div>
-              {errors.date && <p className="mt-1 text-sm text-destructive">{errors.date}</p>}
-            </div>
+            <CustomDatePicker
+              value={formData.date}
+              onChange={(date) => {
+                setFormData((prev) => ({ ...prev, date }));
+                if (errors.date) {
+                  setErrors((prev) => ({ ...prev, date: "" }));
+                }
+              }}
+              error={errors.date}
+              label={t("reservationModal.dateLabel")}
+              placeholder={t("reservationModal.selectDate")}
+            />
 
             {/* Campo Ora */}
-            <div>
-              <label className="block text-sm font-body text-foreground mb-2">
-                {t("reservationModal.timeLabel")}
-              </label>
-              <div className="relative">
-                <FiClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent" />
-                <select
-                  name="time"
-                  value={formData.time}
-                  onChange={handleInputChange}
-                  className={`w-full pl-10 pr-4 py-2 rounded-md border ${
-                    errors.time ? "border-destructive" : "border-input"
-                  } focus:outline-none focus:ring-2 focus:ring-ring appearance-none`}
-                >
-                  <option value="">{t("reservationModal.timePlaceholder")}</option>
-                  {availableTimeSlots.length > 0 ? (
-                    availableTimeSlots.map((slot) => (
-                      <option key={slot} value={slot}>
-                        {slot}
-                      </option>
-                    ))
-                  ) : (
-                    <option value="">{t("reservationModal.noTimeSlots")}</option>
-                  )}
-                </select>
-              </div>
-              {errors.time && <p className="mt-1 text-sm text-destructive">{errors.time}</p>}
-            </div>
+            <CustomTimeSelect
+              value={formData.time}
+              onChange={(time) => {
+                setFormData((prev) => ({ ...prev, time }));
+                if (errors.time) {
+                  setErrors((prev) => ({ ...prev, time: "" }));
+                }
+              }}
+              options={availableTimeSlots}
+              error={errors.time}
+              label={t("reservationModal.timeLabel")}
+              placeholder={t("reservationModal.timePlaceholder")}
+            />
           </div>
 
           {/* Numero di Persone */}
-          <div>
-            <label className="block text-sm font-body text-foreground mb-2">
-              {t("reservationModal.peopleLabel")}
-            </label>
-            <div className="relative">
-              <FiUsers className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent" />
-              <select
-                name="seats"
-                value={formData.seats}
-                onChange={handleInputChange}
-                className="w-full pl-10 pr-4 py-2 rounded-md border border-input focus:outline-none focus:ring-2 focus:ring-ring appearance-none"
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                  <option key={num} value={num}>
-                    {num} {num === 1 ? t("reservationModal.personSingular") : t("reservationModal.personPlural")}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <CustomPeopleSelect
+            value={formData.seats}
+            onChange={(seats) => {
+              setFormData((prev) => ({ ...prev, seats }));
+            }}
+            label={t("reservationModal.peopleLabel")}
+            min={1}
+            max={10}
+          />
 
           {/* Richieste Speciali */}
           <div>

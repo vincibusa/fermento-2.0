@@ -6,6 +6,7 @@ export interface Reservation {
   id?: string;
   fullName: string;
   phone: string;
+  countryCode: string;
   email: string;
   date: string;   // formato "YYYY-MM-DD"
   time: string;   // formato "HH:mm"
@@ -53,6 +54,7 @@ export const getReservationById = async (id: string): Promise<Reservation | null
       id: apiReservation.id,
       fullName: apiReservation.fullName,
       phone: apiReservation.phone,
+      countryCode: apiReservation.countryCode,
       email: apiReservation.email,
       date: apiReservation.date,
       time: apiReservation.time,
@@ -111,6 +113,7 @@ export const getReservations = async (filters?: {
       id: apiReservation.id,
       fullName: apiReservation.fullName,
       phone: apiReservation.phone,
+      countryCode: apiReservation.countryCode,
       email: apiReservation.email,
       date: apiReservation.date,
       time: apiReservation.time,
@@ -147,6 +150,7 @@ export const addReservation = async (reservation: Reservation): Promise<string |
     const reservationData = {
       fullName: reservation.fullName,
       phone: reservation.phone,
+      countryCode: reservation.countryCode,
       email: reservation.email,
       date: reservation.date,
       time: reservation.time,
@@ -281,6 +285,7 @@ export const subscribeToReservationsForDate = (
       id: apiReservation.id,
       fullName: apiReservation.fullName,
       phone: apiReservation.phone,
+      countryCode: apiReservation.countryCode,
       email: apiReservation.email,
       date: apiReservation.date,
       time: apiReservation.time,

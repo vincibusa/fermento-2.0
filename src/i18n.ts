@@ -104,6 +104,9 @@ const resources = {
       "reservationModal.emailPlaceholder": "Enter your email",
       "reservationModal.error.emailRequired": "Email is required",
       "reservationModal.error.emailInvalid": "Please enter a valid email",
+      "reservationModal.selectDate": "Select a date",
+      "reservationModal.today": "Today",
+      "reservationModal.phoneHelper": "Enter your phone number without country code",
 
       // Menu translations (Categories)
       "menu.categories.antipasti": "Appetizers",
@@ -612,6 +615,9 @@ const resources = {
       "reservationModal.holdTimeMessage": "Votre table sera réservée pendant 15 minutes après l'heure de réservation",
       "reservationModal.closeButton": "Fermer",
       "reservationModal.contactInfo": "Contactez-nous par téléphone : +39 331 872 7612",
+      "reservationModal.selectDate": "Sélectionnez une date",
+      "reservationModal.today": "Aujourd'hui",
+      "reservationModal.phoneHelper": "Entrez votre numéro sans l'indicatif international",
 
       // Menu translations (Categories)
       "menu.categories.antipasti": "Antipasti",
@@ -767,8 +773,10 @@ const resources = {
       "reservationModal.emailLabel": "Email",
       "reservationModal.emailPlaceholder": "Inserisci la tua email",
       "reservationModal.error.emailRequired": "L'email è obbligatoria",
-      "reservationModal.error.emailInvalid": "Inserisci un'email valida"
-    },
+            "reservationModal.error.emailInvalid": "Inserisci un'email valida",
+
+ 
+      },
   },
   de: {
     translation: {
@@ -1000,7 +1008,10 @@ const resources = {
       "reservationModal.emailLabel": "E-Mail",
       "reservationModal.emailPlaceholder": "Geben Sie Ihre E-Mail ein",
       "reservationModal.error.emailRequired": "E-Mail ist erforderlich",
-      "reservationModal.error.emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+      "reservationModal.error.emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "reservationModal.selectDate": "Datum auswählen",
+      "reservationModal.today": "Heute",
+      "reservationModal.phoneHelper": "Geben Sie Ihre Nummer ohne Ländervorwahl ein"
     }
   }
 };

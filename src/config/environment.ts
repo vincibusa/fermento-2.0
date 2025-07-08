@@ -14,7 +14,7 @@ export interface Environment {
 export const environments: Record<string, Environment> = {
   development: {
     name: 'Development',
-    apiUrl: 'https://fermento-backend--fermento-pizzeria.europe-west4.hosted.app/api',
+    apiUrl: 'http://localhost:8080/api',
     isProduction: false,
     features: {
       realTimeUpdates: true,

@@ -4,6 +4,7 @@ export interface ApiReservation {
   id?: string;
   fullName: string;
   phone: string;
+  countryCode: string;
   email: string;
   date: string;   // formato "YYYY-MM-DD"
   time: string;   // formato "HH:mm"

@@ -115,6 +115,7 @@ const ReservationModalEdit: React.FC<ReservationModalProps> = ({ isOpen, onClose
         const updatedReservation: Reservation = {
           fullName,
           phone: formData.phone,
+          countryCode: reservation?.countryCode || '+39', // usa il countryCode esistente o default italiano
           date: formData.date,
           time: formData.time,
           seats: formData.seats,
