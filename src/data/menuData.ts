@@ -116,23 +116,30 @@ export const menuItems = [
     category: "Pizze Speciali",
     items: [
       {
-        name: "menu.items.pizzeSpeciali['Broccolo e Salsiccia'].name",
-        description: "menu.items.pizzeSpeciali['Broccolo e Salsiccia'].description",
-        price: "€13",
+        name: "Zucchina e il suo fiore",
+        description: "Fior di latte, Crema di zucchine, pomodorini gialli, stracciatella, gambero crudo marinato, fiori di zucca",
+        price: "€18",
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
       {
-        name: "menu.items.pizzeSpeciali['Zucca e Provola'].name",
-        description: "menu.items.pizzeSpeciali['Zucca e Provola'].description",
+        name: "Black angus tonnato",
+        description: "Fior di latte, confettura di cipolle, salsa tonnata, black angus, foglie di capperi",
+        price: "€16",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
+      },
+      {
+        name: "Lardo patate e pecorino",
+        description: "Fior di latte, lardo, crema di patate al forno, pecorino, basilico",
         price: "€14",
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
       {
-        name: "menu.items.pizzeSpeciali['Patate e Porchetta'].name",
-        description: "menu.items.pizzeSpeciali['Patate e Porchetta'].description",
-        price: "€15",
+        name: "Peperonata",
+        description: "Fior di latte, crema di patate al basilico, filetti di peperoni al forno, salsiccia secca, cipollotto, olio di nduja",
+        price: "€14",
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
+
       {
         name: "menu.items.pizzeSpeciali.Trentina.name",
         description: "menu.items.pizzeSpeciali.Trentina.description",
@@ -187,17 +194,18 @@ export const menuItems = [
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
       {
-        name: "menu.items.vegetariane.Broccolina.name",
-        description: "menu.items.vegetariane.Broccolina.description",
-        price: "€10",
+        name: "Cucuzza e tenerumi",
+        description: "Fior di latte, crema di tenerumi e Cucuzza, stracciatella, pomodorini bruciato, zucchina napoletana fritta",
+        price: "€14",
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
       {
-        name: "menu.items.vegetariane['Zucca 2.0'].name",
-        description: "menu.items.vegetariane['Zucca 2.0'].description",
-        price: "€10",
+        name: "Un mare di pomodoro",
+        description: "Crema di pomodoro arrosto, pomodorino giallo semi dry, datterino rosso semi dry, pomodoro di stagione condito, pesto di basilico, origano, olio di aglio",
+        price: "€12",
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
+
     ],
   },
   {
@@ -279,9 +287,9 @@ export const menuItems = [
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
       {
-        name: "menu.items['Padellino Farcito'].['Mamma mia!'].name",
-        description: "menu.items['Padellino Farcito'].['Mamma mia!'].description",
-        price: "€15",
+        name: "Idda è!",
+        description: "Fior di latte, lardo, crema di patata al forno, pecorino, basilico",
+        price: "€14",
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
       {
@@ -362,13 +370,13 @@ export const menuItems = [
       },
       {
         name: "menu.items.antipasti['Montanarine in fermento 2 pezzi'].name",
-        description: "menu.items.antipasti['Montanarine in fermento 2 pezzi'].description",
-        price: "€6",
+        description: "1) Mortadella l'Artemano Levoni, pesto di pistacchio ,stracciatella e gambero marinato + 1 Bresaola IGP della Valtellina Levoni, Grana Padano e pesto di rucola",
+        price: "€8",
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
       {
         name: "menu.items.antipasti['Montanarine nobili 2 pezzi'].name",
-        description: "menu.items.antipasti['Montanarine nobili 2 pezzi'].description",
+        description: "1) Prosciutto crudo 24 mesi l'Artemano Levoni, stracciatella e pomodorino confit,+1 mortadella l’Artemano Levoni, pesto di pistacchio e stracciatella",
         price: "€7,50",
         image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
       },
